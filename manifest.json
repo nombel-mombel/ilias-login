@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "ilias-login",
+  "version": "1.0.0",
+  "description": "Tries to get you back to your previous page before the redirect due to session timeout on [ilias.studium.kit.edu]. Also automatically selects KIT login for you.",
+  "permissions": ["webNavigation", "webRequest", "webRequestBlocking", "https://ilias.studium.kit.edu/*"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{f319d63b-d9c9-4495-896c-7695d75a4c3a}",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+  "background": {
+    "scripts": ["src/background.js"]
+  }
+}
