@@ -1,2 +1,7 @@
 # Ilias Login
 It is very annoying to be logged out frequently and even more annoying to not instantly get back the page you were previously on. With this Addon for ilias.studium.kit.edu you will always be returned to the page you were on before logout. Additionally you will automatically skip the page asking for your login method and automatically log you in as KIT member.
+
+## Features
+- Automatically get send to login page
+- skip login provider page
+- when logged out on a non public page you will return to the same page after login
