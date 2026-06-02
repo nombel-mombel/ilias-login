@@ -14,5 +14,12 @@
   },
   "background": {
     "scripts": ["src/background.js"]
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://ilias.studium.kit.edu/*"],
+      "js": ["src/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }
