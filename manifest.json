@@ -15,6 +15,10 @@
   "background": {
     "scripts": ["src/background.js"]
   },
+  "icons": {
+    "48": "icons/ilias.svg",
+    "128": "icons/ilias.svg"
+  },
   "content_scripts": [
     {
       "matches": ["https://ilias.studium.kit.edu/*"],
