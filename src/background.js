@@ -10,21 +10,29 @@ browser.webRequest.onBeforeRedirect.addListener(
         if (details.type !== "main_frame") return;
         if (!details.url.startsWith("https://ilias.studium.kit.edu/")) return;
         if (details.statusCode !== 302) return;
-        if (!details.url.includes("cmdClass=")) return;
 
         const params = new URLSearchParams(details.url.split("?")[1] || "");
-        const cmdClass = (params.get("cmdClass") || "").toLowerCase();
+        const id = params.get("ref_id");
+        const cmdClass = params.get("cmdClass")?.toLowerCase();
+        if (!id || !cmdClass) return;
+
+        const redirectParams = new URLSearchParams(details.redirectUrl.split("?")[1] || "");
+        const redirectId = redirectParams.get("ref_id");
+        const redirectCmdClass = redirectParams.get("cmdClass")?.toLowerCase();
+        if (cmdClass === redirectCmdClass && redirectId === id) return;
+
         let type;
+        let computedUrl;
         switch (cmdClass) {
+            case "ilinfoscreengui":
+            case "ilobjcoursegui":
+                computedUrl = "https://ilias.studium.kit.edu/shib_login.php?target=crs_" + id;
+                break;
             case "ilobjfoldergui":
                 type = "fold";
                 break;
             case "ilobjfilegui":
                 type = "file";
-                break;
-            case "ilinfoscreengui":
-            case "ilobjcoursegui":
-                type = "crs";
                 break;
             case "ilforumgui":
                 type = "frm";
@@ -36,11 +44,9 @@ browser.webRequest.onBeforeRedirect.addListener(
                 return;
         }
 
-        const id = params.get("ref_id");
-        if (!id) return;
-
-        // Compute the new desired target URL
-        const computedUrl = `https://ilias.studium.kit.edu/goto.php/${type}/${id}`;
+        if (!computedUrl) {
+            computedUrl = `https://ilias.studium.kit.edu/goto.php/${type}/${id}`;
+        }
 
         // Record mapping so we can intercept the next onBeforeRequest to serverTarget
         pendingRedirects.set(details.tabId, {
@@ -78,7 +84,6 @@ browser.webRequest.onBeforeRequest.addListener(
           return;
       }
 
-      // Remove the mapping so we don't repeatedly redirect
       pendingRedirects.delete(details.tabId);
 
       console.log("ilias-login redirecting request", details.url, "->", entry.newUrl);
