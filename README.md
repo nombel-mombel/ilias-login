@@ -5,3 +5,4 @@ It is very annoying to be logged out frequently and even more annoying to not in
 - Automatically get send to login page
 - skip login provider page
 - when logged out on a non public page you will return to the same page after login
+- automatically log in at the Single Sign On

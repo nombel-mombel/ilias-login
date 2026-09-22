@@ -1,19 +1,29 @@
 {
   "manifest_version": 2,
   "name": "ilias-login",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "description": "Tries to get you back to your previous page before the redirect due to session timeout on [ilias.studium.kit.edu]. Also automatically selects KIT login for you.",
-  "permissions": ["webNavigation", "webRequest", "webRequestBlocking", "https://ilias.studium.kit.edu/*"],
+  "permissions": [
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "storage",
+    "https://ilias.studium.kit.edu/*"
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "{f319d63b-d9c9-4495-896c-7695d75a4c3a}",
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": [
+          "none"
+        ]
       }
     }
   },
   "background": {
-    "scripts": ["src/background.js"]
+    "scripts": [
+      "src/background.js"
+    ]
   },
   "icons": {
     "48": "icons/ilias.svg",
@@ -21,9 +31,25 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://ilias.studium.kit.edu/*"],
-      "js": ["src/content.js"],
-      "run_at": "document_idle"
+      "matches": [
+        "https://ilias.studium.kit.edu/*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://idp.scc.kit.edu/idp/profile/SAML2/Redirect/SSO?execution=*"
+      ],
+      "js": [
+        "src/instant-scc.js"
+      ],
+      "run_at": "document_end"
     }
-  ]
+  ],
+  "options_ui": {
+    "page": "src/options.html"
+  }
 }

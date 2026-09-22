@@ -61,33 +61,33 @@ browser.webRequest.onBeforeRedirect.addListener(
 // Intercept requests and redirect when they match a pending server redirect target
 browser.webRequest.onBeforeRequest.addListener(
     (details) => {
-      if (details.type !== "main_frame") return;
-      if (!details.url.startsWith("https://ilias.studium.kit.edu/")) return;
+        if (details.type !== "main_frame") return;
+        if (!details.url.startsWith("https://ilias.studium.kit.edu/")) return;
 
-      if (details.url.startsWith("https://ilias.studium.kit.edu/login.php")) {
+        if (details.url.startsWith("https://ilias.studium.kit.edu/login.php")) {
             const params = new URLSearchParams(details.url.split("?")[1] || "");
             const target = params.get("target");
             return { redirectUrl: "https://ilias.studium.kit.edu/shib_login.php" + (target ? '?target=' + target : '') };
-      }
+        }
 
-      const entry = pendingRedirects.get(details.tabId);
-      if (!entry) return;
+        const entry = pendingRedirects.get(details.tabId);
+        if (!entry) return;
 
-      if (details.url !== entry.oldUrl) {
-          // The browser is going somewhere else than the server's redirect target; do not apply
-          pendingRedirects.delete(details.tabId);
-          return;
-      }
+        if (details.url !== entry.oldUrl) {
+            // The browser is going somewhere else than the server's redirect target; do not apply
+            pendingRedirects.delete(details.tabId);
+            return;
+        }
 
-      if (details.url === entry.newUrl) {
-          pendingRedirects.delete(details.tabId);
-          return;
-      }
+        if (details.url === entry.newUrl) {
+            pendingRedirects.delete(details.tabId);
+            return;
+        }
 
-      pendingRedirects.delete(details.tabId);
+        pendingRedirects.delete(details.tabId);
 
-      console.log("ilias-login redirecting request", details.url, "->", entry.newUrl);
-      return { redirectUrl: entry.newUrl };
+        console.log("ilias-login redirecting request", details.url, "->", entry.newUrl);
+        return { redirectUrl: entry.newUrl };
     },
     { urls: ["https://ilias.studium.kit.edu/*"] },
     ["blocking"]
